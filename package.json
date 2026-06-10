@@ -1,0 +1,9 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "Simple client-side calculator",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -o"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .calculator {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            padding: 24px;
+            width: 320px;
+        }
+        .display {
+            background: #222;
+            color: #fff;
+            font-size: 2.5rem;
+            text-align: right;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        button {
+            padding: 20px;
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .num {
+            background: #e0e0e0;
+        }
+        .op {
+            background: #ff9800;
+            color: #fff;
+        }
+        .eq {
+            background: #4caf50;
+            color: #fff;
+        }
+        .clear {
+            background: #f44336;
+            color: #fff;
+        }
+        .span-two {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="op" onclick="appendOperator('/')">÷</button>
+            <button class="op" onclick="appendOperator('*')">×</button>
+            <button class="op" onclick="appendOperator('-')">−</button>
+            <button class="num" onclick="appendNumber('7')">7</button>
+            <button class="num" onclick="appendNumber('8')">8</button>
+            <button class="num" onclick="appendNumber('9')">9</button>
+            <button class="op" onclick="appendOperator('+')">+</button>
+            <button class="num" onclick="appendNumber('4')">4</button>
+            <button class="num" onclick="appendNumber('5')">5</button>
+            <button class="num" onclick="appendNumber('6')">6</button>
+            <button class="eq" onclick="calculate()">=</button>
+            <button class="num" onclick="appendNumber('1')">1</button>
+            <button class="num" onclick="appendNumber('2')">2</button>
+            <button class="num" onclick="appendNumber('3')">3</button>
+            <button class="num" onclick="appendNumber('0')">0</button>
+            <button class="num" onclick="appendNumber('.')">.</button>
+            <button class="num" onclick="appendNumber('0')">0</button>
+            <!-- Spacer to fill last two columns? Actually we have 4 cols, 16 buttons. We'll reorder for better layout -->
+        </div>
+    </div>
+    <script>
+        let currentInput = '0';
+        let operator = null;
+        let previousInput = null;
+        let shouldResetDisplay = false;
+
+        const display = document.getElementById('display');
+
+        function updateDisplay() {
+            display.innerText = currentInput;
+        }
+
+        function appendNumber(num) {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+            if (num === '.' && currentInput.includes('.')) return;
+            if (currentInput === '0' && num !== '.') {
+                currentInput = num;
+            } else {
+                currentInput += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator !== null) {
+                calculate();
+            }
+            previousInput = currentInput;
+            operator = op;
+            shouldResetDisplay = true;
+        }
+
+        function calculate() {
+            if (operator === null || shouldResetDisplay) return;
+            const prev = parseFloat(previousInput);
+            const curr = parseFloat(currentInput);
+            if (isNaN(prev) || isNaN(curr)) return;
+            let result;
+            switch (operator) {
+                case '+': result = prev + curr; break;
+                case '-': result = prev - curr; break;
+                case '*': result = prev * curr; break;
+                case '/': result = curr === 0 ? 'Error' : prev / curr; break;
+                default: return;
+            }
+            currentInput = result.toString();
+            operator = null;
+            previousInput = null;
+            shouldResetDisplay = true;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            operator = null;
+            previousInput = null;
+            shouldResetDisplay = false;
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
